@@ -3,6 +3,10 @@
 Created on  May 4, 2019 
 Derivation from http://kitchingroup.cheme.cmu.edu/blog/2015/01/18/Equation-of-a-plane-through-three-points/
 
+Blue points are samples on which we are approximating.
+Red points are approximated function values "ideal results".
+Green points are results of approximation.
+
 @author: Pinaxe
 @License: WTFPL
 """
@@ -41,20 +45,14 @@ def Nearest3(x,y,z,xt,yt): #Find 3 (non collinear) points nearest to the point o
        p=[a,b,c]
        dist=distXY(p,pt)
        if min1>dist:
-          p3=p2
           p2=p1
           p1=p 
           min1=dist 
        elif min2>dist:
-          p3=p2
           p2=p 
           min2=dist 
-       elif min3>dist:
-          p3=p 
-          min3=dist 
-    if CollinearXY(p1,p2,p3): # If points are collinear find another one.
-      min3=1000;              #Suppose 1000 is big enough for my data where distances are less than that !!!!
-      for a,b,c in zip(x,y,z):
+#    if CollinearXY(p1,p2,p3): # If points are collinear find another one.
+    for a,b,c in zip(x,y,z):
          p=[a,b,c] 
          dist=distXY(p,pt)
          if min3>dist and not CollinearXY(p1,p2,p): # This one is not collinear
@@ -90,6 +88,13 @@ for Xt,Yt,Zt in zip(X1.flatten(),Y1.flatten(),Z1.flatten()) :
     p1,p2,p3=Nearest3(X.flatten(),Y.flatten(),Z.flatten(),Xt,Yt)
     plane=aPlaneEquationBy3points(p1,p2,p3)
     Zu=Approximate(plane,Xt,Yt)
+    if Zu>=2:
+        print("xtyt-",Xt,Yt)
+        print("plane ",plane)
+        print("pts")
+        print(p1)
+        print(p2)
+        print(p3)
     Za.append(Zu)
 Zo=np.asarray(Za)
 
@@ -103,7 +108,7 @@ ax.plot( X.flatten(),  Y.flatten(),  Z.flatten(),'bo')
 # coordinates.
 # ax.plot(*zip(p1, p2, p3), color='r', linestyle=' ', marker='o')
 # adjust the view so we can see the point/plane alignment
-ax.view_init(10, 80)
+ax.view_init(10, 8)
 plt.tight_layout()
 #plt.savefig('plane.png')
 plt.show()
