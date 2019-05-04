@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on  May 2, 2019 
+Created on  May 4, 2019 
+Derivation from http://kitchingroup.cheme.cmu.edu/blog/2015/01/18/Equation-of-a-plane-through-three-points/
 
 @author: Pinaxe
+@License: WTFPL
 """
 import numpy as np
 import math
@@ -17,24 +19,24 @@ def aPlaneEquationBy3points(p1,p2,p3):
     # print('The equation is {0}x + {1}y + {2}z = {3}'.format(a, b, c, d))
     return (a,b,c,d)
 
-def CollinearXY(a,b,c):
+def CollinearXY(a,b,c): # Check if points are collinear in XY projection so they do not define a plane.
     x1,y1,z1=a
     x2,y2,z2=b
     x3,y3,z3=c
-    res=abs(x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2)) < 0.001
+    res=abs(x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2)) < 0.001  # 0.001 collinear enoug
     return res
 
-def distXY(a,b):
+def distXY(a,b): # Distance from A to B
     x1,y1,_=a
     x2,y2,_=b
     return math.sqrt( (x1-x2)**2+(y1-y2)**2 ) 
     
-def Nearest3(x,y,z,xt,yt):
+def Nearest3(x,y,z,xt,yt): #Find 3 (non collinear) points nearest to the point of interest Xt,Yt
     pt=[xt,yt,0]
     p1 = np.array([0,0,0])
     p2 = np.array([0,0,0])
     p3 = np.array([0,0,0])    
-    min1=min2=min3=1000; 
+    min1=min2=min3=1000; #Suppose 1000 is big enough for my data where distances are less than that !!!!
     for a,b,c in zip(x,y,z):
        p=[a,b,c]
        dist=distXY(p,pt)
@@ -50,15 +52,14 @@ def Nearest3(x,y,z,xt,yt):
        elif min3>dist:
           p3=p 
           min3=dist 
-    if CollinearXY(p1,p2,p3):
-      min3=1000; 
+    if CollinearXY(p1,p2,p3): # If points are collinear find another one.
+      min3=1000;              #Suppose 1000 is big enough for my data where distances are less than that !!!!
       for a,b,c in zip(x,y,z):
          p=[a,b,c] 
          dist=distXY(p,pt)
-         if min3>dist and not CollinearXY(p1,p2,p):
+         if min3>dist and not CollinearXY(p1,p2,p): # This one is not collinear
             p3=p  
-            min3=dist 
-        
+            min3=dist      
     return p1,p2,p3
 
 def Approximate(plane,xt,yt):
