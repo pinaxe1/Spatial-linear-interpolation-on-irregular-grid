@@ -2,10 +2,9 @@
 """
 Created on  May 4, 2019 
 Derivation from http://kitchingroup.cheme.cmu.edu/blog/2015/01/18/Equation-of-a-plane-through-three-points/
-
-Blue points are samples on which we are approximating.
-Red points are approximated function values "ideal results".
-Green points are results of approximation.
+Blue points are sparce samples on which we are approximating the function Sin(X)+Cos(Y).
+Red points are actual function values (ideal results).
+Green points are result of approximation.
 
 @author: Pinaxe
 @License: WTFPL
@@ -34,30 +33,39 @@ def distXY(a,b): # Distance from A to B
     x1,y1,_=a
     x2,y2,_=b
     return math.sqrt( (x1-x2)**2+(y1-y2)**2 ) 
-    
+
+#list   [k for k in l if k %2]    
 def Nearest3(x,y,z,xt,yt): #Find 3 (non collinear) points nearest to the point of interest Xt,Yt
     pt=[xt,yt,0]
-    p1 = np.array([0,0,0])
-    p2 = np.array([0,0,0])
-    p3 = np.array([0,0,0])    
-    min1=min2=min3=1000; #Suppose 1000 is big enough for my data where distances are less than that !!!!
+    p1=p2=p3= np.array([0,0,0])
+    min1=min2=min3=1000
     for a,b,c in zip(x,y,z):
        p=[a,b,c]
        dist=distXY(p,pt)
        if min1>dist:
-          p2=p1
-          p1=p 
+          p3=p2.copy()
+          p2=p1.copy()
+          p1=p.copy() 
+          min3=min2
+          min2=min1
           min1=dist 
        elif min2>dist:
-          p2=p 
+          p3=p2.copy()
+          p2=p.copy()
+          min3=min2
           min2=dist 
-#    if CollinearXY(p1,p2,p3): # If points are collinear find another one.
-    for a,b,c in zip(x,y,z):
+       elif min3>dist and not CollinearXY(p1,p2,p):
+          p3=p.copy() 
+          min3=dist 
+    
+    if CollinearXY(p1,p2,p3): # If points are collinear find another one.
+      for a,b,c in zip(x,y,z):
          p=[a,b,c] 
          dist=distXY(p,pt)
          if min3>dist and not CollinearXY(p1,p2,p): # This one is not collinear
-            p3=p  
+            p3=p.copy()  
             min3=dist      
+            
     return p1,p2,p3
 
 def Approximate(plane,xt,yt):
@@ -79,7 +87,7 @@ Z = np.cos(X)+np.sin(Y)
 
 
 x1= np.linspace(-0, 3, 6)
-y1= np.linspace(-0, 3, 6)
+y1= np.linspace(-0, 3, 8)
 X1,Y1 = np.meshgrid(x1, y1)
 Z1 = np.cos(X1)+np.sin(Y1)
 
@@ -88,13 +96,6 @@ for Xt,Yt,Zt in zip(X1.flatten(),Y1.flatten(),Z1.flatten()) :
     p1,p2,p3=Nearest3(X.flatten(),Y.flatten(),Z.flatten(),Xt,Yt)
     plane=aPlaneEquationBy3points(p1,p2,p3)
     Zu=Approximate(plane,Xt,Yt)
-    if Zu>=2:
-        print("xtyt-",Xt,Yt)
-        print("plane ",plane)
-        print("pts")
-        print(p1)
-        print(p2)
-        print(p3)
     Za.append(Zu)
 Zo=np.asarray(Za)
 
@@ -108,7 +109,7 @@ ax.plot( X.flatten(),  Y.flatten(),  Z.flatten(),'bo')
 # coordinates.
 # ax.plot(*zip(p1, p2, p3), color='r', linestyle=' ', marker='o')
 # adjust the view so we can see the point/plane alignment
-ax.view_init(10, 8)
+ax.view_init(8 ,  8)
 plt.tight_layout()
 #plt.savefig('plane.png')
 plt.show()
