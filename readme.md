@@ -8,7 +8,7 @@ P3=(x3,y3,z3) <br>
  ... <br>
 Pn=(Xn,Yn,Zn)<br>
 We want an approximation of the function in the point Pt=(Xt, Yt).<br>
-First we select 3 points nearest to the target. <br>
-Build a plane equation by those 3 points and hope that the function f(x,y) is "linear enough" so the linear approximation will yield good results.<br>
-Use target point coordinates (Xt, Yt) and the plane equation to find approximated value.<br>
-Done.
+1. First we select 3 points nearest to the target. <br>
+2. Build a plane equation by those 3 points and hope that the function f(x,y) is "linear enough" so the linear approximation will yield some good results.<br>
+3. Use target point coordinates (Xt, Yt) and the plane equation to calculate approximated value of the function in this point.<br>
+Voila. :)
