@@ -63,50 +63,26 @@ def ApproximatePoint(plane,pt):
     return res
 
 def ApproximatePointOnMesh(mesh,point):
-    Near3points=Near3List(aMesh ,point)
+    Near3points=Near3List(mesh ,point)
     plane=aPlaneEquationBy3points(*Near3points)
     res=ApproximatePoint(plane,point)
     return res
 
 ####################################################################
 
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-  
-x = np.linspace(-0, 3, 5)
-y = np.linspace(-0, 3, 5)
-X, Y = np.meshgrid(x, y)
-Z = np.cos(X)+np.sin(Y)
-
-
-x1= np.linspace(-0, 3, 9)
-y1= np.linspace(-0, 3, 9)
-X1,Y1 = np.meshgrid(x1, y1)
-Z1 = np.cos(X1)+np.sin(Y1)
-
-Za = []
-pointlist=np.stack((X1.flatten(),Y1.flatten(),Z1.flatten()),-1)
-aMesh    =np.stack(( X.flatten(), Y.flatten(), Z.flatten()),-1)
-
-for point in pointlist :
-        Za.append(ApproximatePointOnMesh(aMesh,point))
-Zo=np.asarray(Za)
-print(Zo)
-print(Z1.flatten())
-
-# plot the mesh. Each array is 2D, so we flatten them to 1D arrays
-ax.plot(X1.flatten(), Y1.flatten(), Zo.flatten(),'go')
-ax.plot(X1.flatten(), Y1.flatten(), Z1.flatten(),'ro')
-ax.plot( X.flatten(),  Y.flatten(),  Z.flatten(),'bo')
-
-# plot the original points. We use zip to get 1D lists of x, y and z
-# coordinates.
-# ax.plot(*zip(p1, p2, p3), color='r', linestyle=' ', marker='o')
-# adjust the view so we can see the point/plane alignment
-ax.view_init(10 ,  8)
-plt.tight_layout()
-#plt.savefig('plane.png')
-plt.show()
+def main(argv=None):
+    aMesh = np.array(
+             [[1.0, 1.0, 4.0], 
+              [1.0, 2.0, 1.0],
+              [2.0, 1.0, 2.0],
+              [2.0, 2.0, 5.0]])
+    point  =  [2.2,2.5,0]    
+    print('Test approximation')
+    print('Grid of rour points: [X, Y, Z]')
+    print(aMesh)
+    print('approximation for ',point)
+    print('is:',ApproximatePointOnMesh(aMesh,point))
+    
+####################################
+if __name__ == "__main__":
+   main()    
