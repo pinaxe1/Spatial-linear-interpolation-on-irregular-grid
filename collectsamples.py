@@ -2,6 +2,7 @@ import cv2
 import serial
 import time
 import marshal
+import PointOnMesh
 '''
 The script intended to explore transformations from screen coordinates to MeArm control numbers
 It employs the usb camera and MeArm robot arm to take an image of a scene.
@@ -10,8 +11,16 @@ Script will store coordinates and corresponding PWM numbers.
 When mapping established it'll ....
 '''
 def drawPoints(img,tuplist):
+    global xs,ys,B,C,D
     for po in tuplist:         
        cv2.circle(img,(po[0:2]),3,(0,0,255),2)
+    if xs==200 and ys==200: 
+          a=PointOnMesh.ApproximatePointOnMesh(B,(xs,ys,0))   
+    else: a=0    
+    cv2.putText(img,str(xs)[:7], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
+    cv2.putText(img,str(ys)[:7], (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
+    cv2.putText(img,str( a)[:7], (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
+       
 
 def initSerial(ser):
     ser.port = "COM4"
@@ -48,14 +57,16 @@ def readFromSerial(ser) :
         try:
             ser.flushInput() #flush input buffer, discarding all its contents
             ser.flushOutput()#flush output buffer, aborting current output 
-                 #and discard all that is in buffer
+                             #and discard all that is in buffer
+            ser.write("o".encode('ASCII'))   # Send Arduino SnArm 3.1 command to flip output mode back OFF
             time.sleep(0.5)  #give the serial port sometime to receive the data
             res1=""
             res2="a"
             while res1!=res2:
                 res1 = ser.readline()
                 res2 = ser.readline()
-                print("read data: " + res2.decode('utf-8','ignore'))
+            print("read data: " + res2.decode('utf-8','ignore'))
+            ser.write("o".encode('ASCII'))   # Send Arduino SnArm 3.1 command to flip output mode back OFF
             return ParseCommands(str(res1))
         except Exception as e1:
             print ("error communicating...: " + str(e1))
@@ -79,7 +90,7 @@ def loadData():
     return a,b,c
 
 def MouseEventCallback(event, x, y, flags, param):
-    global xo,yo,dataready
+    global xs,ys,dataready
     if event == cv2.EVENT_LBUTTONUP:
         xo,yo=x,y
         dataready=True
@@ -112,11 +123,12 @@ def main(argv=None):
          break
     cv2.destroyAllWindows()
     ser.close()
-    saveData(B,C,D)
+    #saveData(B,C,D)
 '''
 
 '''
-xo=yo=0
+xs=ys=100
+xo=yo=100
 dataready=False
 B=C=D=[]
 if __name__ == "__main__":

@@ -35,7 +35,7 @@ def distXY(a,b): # Distance from A to B
 
 def Near3List(pointList,target):
    p1=p2=p3= np.array([0,0,0])
-   min1=min2=min3=1000
+   min1=min2=min3=100000
    for p in pointList:
       dist=distXY(p,target)
       if min1>dist:
