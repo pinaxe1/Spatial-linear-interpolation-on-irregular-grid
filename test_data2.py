@@ -2,7 +2,7 @@ import cv2
 import marshal
 import PointOnMesh
 import numpy as np
-from  from scipy.interpolate import griddata
+from scipy.interpolate import griddata
 '''
 The script intended to explore transformations from screen coordinates to MeArm control numbers
 It employs the usb camera and MeArm robot arm to take an image of a scene.
@@ -21,22 +21,23 @@ def drawPoints(img,tuplist):
     for po in tuplist:         
        cv2.circle(img,(po[0:2]),3,(0,0,255),2)
        
-    px=np.array(B)[:,[0]]
-    py=np.array(B)[:,[1]]
-    pz=np.array(B)[:,[2]]
+    px=np.array(B)[:,[0]].flatten()
+    py=np.array(B)[:,[1]].flatten()
+    pz=np.array(B)[:,[2]].flatten()
     
   
 
     b=PointOnMesh.ApproximatePointOnMesh(B,(xs,ys,0))   
     c=PointOnMesh.ApproximatePointOnMesh(C,(xs,ys,0))   
-    
+    d=griddata((px, py), pz, (xs,ys), method='linear')
     cv2.putText(img,str(xs)[:7], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str(ys)[:7], (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str( b)[:7], (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str( c)[:7], (10,120), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str( d)[:7], (10,150), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
        
- 
+    #print (px,py)
+    
 def saveData(B,C,D):
     ouf = open('datafile.dat', 'wb')
     marshal.dump(B, ouf)
@@ -64,11 +65,12 @@ def main(argv=None):
     B=bcd[0::3]
     C=bcd[1::3]
     D=bcd[2::3]
-    print(C)
+
     windowName = 'Drawing'
     img1= cv2.imread('ps1.png')
     cv2.namedWindow(windowName)
     cv2.setMouseCallback(windowName, MouseEventCallback)
+    
     while (True):
       img=img1.copy()
       drawPoints(img, B) 
