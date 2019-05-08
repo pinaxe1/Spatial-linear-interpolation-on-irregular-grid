@@ -28,7 +28,7 @@ def main(argv=None):
     Za = []
     pointlist=np.stack((X1.flatten(),Y1.flatten(),Z1.flatten()),-1)
     aMesh    =np.stack(( X.flatten(), Y.flatten(), Z.flatten()),-1)
-
+    print(aMesh)
     for point in pointlist :
         Za.append(PointOnMesh.ApproximatePointOnMesh(aMesh,point))
     Zo=np.asarray(Za)

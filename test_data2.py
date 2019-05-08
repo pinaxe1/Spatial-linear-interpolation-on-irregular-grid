@@ -37,15 +37,10 @@ def drawPoints(img,X,Y):
 def loadData():
     inf = open('datafile.dat', 'rb')
     a = marshal.load(inf)
-    print(a)
     b = marshal.load(inf)
-    print(b)
     c = marshal.load(inf)
-    print(c)
     d = marshal.load(inf)
-    print(d)
     e = marshal.load(inf)
-    print(e)
     inf.close(  )   
     return a,b,c,d,e
 
@@ -62,7 +57,7 @@ def main(argv=None):
     X,Y,B,C,D=loadData()
 
     windowName = 'Drawing'
-    img1= cv2.imread('ps1.png')
+    img1= cv2.imread('ps2.png')
     cv2.namedWindow(windowName)
     cv2.setMouseCallback(windowName, MouseEventCallback)
     
