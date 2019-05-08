@@ -16,20 +16,16 @@ from scipy.interpolate import griddata
 for i, method in enumerate(('nearest', 'linear', 'cubic')):
     Ti = griddata((px, py), f(px,py), (X, Y), method=method)
 '''
-def drawPoints(img,tuplist):
+def drawPoints(img,X,Y):
     global xs,ys,B,C,D
-    for po in tuplist:         
-       cv2.circle(img,(po[0:2]),3,(0,0,255),2)
-       
-    px=np.array(B)[:,[0]].flatten()
-    py=np.array(B)[:,[1]].flatten()
-    pz=np.array(B)[:,[2]].flatten()
-    
-  
+    if X :
+        for x,y in zip(X,Y):         
+            cv2.circle(img,(x,y),3,(0,0,255),2)
 
-    b=PointOnMesh.ApproximatePointOnMesh(B,(xs,ys,0))   
-    c=PointOnMesh.ApproximatePointOnMesh(C,(xs,ys,0))   
-    d=griddata((px, py), pz, (xs,ys), method='linear')
+    b=griddata((X, Y), B, (xs,ys), method='linear')
+    c=griddata((X, Y), C, (xs,ys), method='linear')
+    d=griddata((X, Y), D, (xs,ys), method='linear')
+    
     cv2.putText(img,str(xs)[:7], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str(ys)[:7], (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
     cv2.putText(img,str( b)[:7], (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), lineType=cv2.LINE_AA) 
@@ -38,18 +34,20 @@ def drawPoints(img,tuplist):
        
     #print (px,py)
     
-def saveData(B,C,D):
-    ouf = open('datafile.dat', 'wb')
-    marshal.dump(B, ouf)
-    marshal.dump(C, ouf)
-    marshal.dump(D, ouf)
-    ouf.close(  )
-    
 def loadData():
-    inf = open('datafile1.dat', 'rb')
+    inf = open('datafile.dat', 'rb')
     a = marshal.load(inf)
+    print(a)
+    b = marshal.load(inf)
+    print(b)
+    c = marshal.load(inf)
+    print(c)
+    d = marshal.load(inf)
+    print(d)
+    e = marshal.load(inf)
+    print(e)
     inf.close(  )   
-    return a
+    return a,b,c,d,e
 
 def MouseEventCallback(event, x, y, flags, param):
     global xs,ys,dataready
@@ -60,11 +58,8 @@ def MouseEventCallback(event, x, y, flags, param):
         xs,ys=x,y
 
 def main(argv=None):
-    global A,B,C,D,dataready
-    bcd=loadData()
-    B=bcd[0::3]
-    C=bcd[1::3]
-    D=bcd[2::3]
+    global B,C,D,dataready
+    X,Y,B,C,D=loadData()
 
     windowName = 'Drawing'
     img1= cv2.imread('ps1.png')
@@ -73,7 +68,7 @@ def main(argv=None):
     
     while (True):
       img=img1.copy()
-      drawPoints(img, B) 
+      drawPoints(img, X,Y) 
       cv2.imshow(windowName, img)
       key=cv2.waitKey(1) & 0xFF
       if key== ord('x'):
@@ -83,6 +78,10 @@ def main(argv=None):
 xs=ys=100
 xo=yo=100
 dataready=False
-B=C=D=[]
+B=[]
+C=[]
+D=[]
+X=[]
+Y=[]
 if __name__ == "__main__":
    main()    
