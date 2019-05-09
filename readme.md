@@ -12,3 +12,6 @@ We want an approximation of the function in the point Pt=(Xt, Yt).<br>
 2. Build a plane equation by those 3 points and hope that the function f(x,y) is "linear enough" so the linear approximation will yield some good results.<br>
 3. Use target point coordinates (Xt, Yt) and the plane equation to calculate approximated value of the function in this point.<br>
 Voila. :)
+https://youtu.be/5MEa5yPxla4
+To control MeArm with a mouse use control_arm1.py
+Approximating dataset 'datafile.dat' should be collected in advance with collectsamples.py.
