@@ -12,6 +12,7 @@ Then you have to (use a mouse) click points corresponding to arm positions on th
 Script will store coordinates and corresponding PWM numbers.
 When mapping established it'll ....
 https://youtu.be/5MEa5yPxla4
+https://youtu.be/-flk5A8PWJw
 '''
 def initSerial(ser):
     ser.port = "COM4"
@@ -38,7 +39,10 @@ def sendCommand(ser,b,c,d) :
             ser.flushInput() #flush input buffer, discarding all its contents
             ser.flushOutput()#flush output buffer, aborting current output 
                              #and discard all that is in buffer
-            command="n %db %dc %dd"%(b,c,d)                  
+            command="n100b10t100c10t"
+            ser.write(command.encode('ASCII'))   # Send Arduino SnArm 3.1 command to flip output mode back OFF
+            time.sleep(0.5)  #give the serial port sometime to receive the data
+            command="n %dd %db %dc"%(d,b,c)                  
             print(command)
             ser.write(command.encode('ASCII'))   # Send Arduino SnArm 3.1 command to flip output mode back OFF
             time.sleep(0.5)  #give the serial port sometime to receive the data
