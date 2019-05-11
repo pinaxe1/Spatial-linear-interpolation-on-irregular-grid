@@ -1,4 +1,4 @@
-<H2>#Linear Spatial Intepolation on an Irregular Grid<br></H2>
+<H2>Linear Spatial Intepolation on an Irregular Grid<br></H2>
 There are a standard functions for interpolation like a griddata and LinearNDInterpolator in scipy and you'd better yse those (they even can do bicubic interpolation wich isway more cool). See https://stackoverflow.com/questions/47900969/4d-interpolation-for-irregular-x-y-z-grids-by-python for more details. This script is "better" in only one regard. It will extrapolate too.
 
 <H2>How does it work?<br></H2>
