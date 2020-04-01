@@ -6,9 +6,11 @@ import PointOnMesh
 '''
 The script intended to explore transformations from screen coordinates to MeArm control numbers
 It employs the usb camera and MeArm robot arm to take an image of a scene.
-Then you have to (use a mouse) click points corresponding to arm positions on the scene.
-Script will store coordinates and corresponding PWM numbers.
-When mapping established it'll ....
+First you should use analog dials of meArm to set meArm in some position where it'll touch a desk surface.
+Then you have to (use a mouse) click a point on the scene where mearm claw touches the desk.
+Script will store coordinates and corresponding PWM numbers into memory.
+Repeat this procedure. Collect more than 20 points to evenly cover whole area where the arm claw could reach.
+When mapping established press 'x' button. The script will save the data into a file datfile.dat .
 '''
 def drawPoints(img,X,Y):
     global xs,ys,B,C,D
